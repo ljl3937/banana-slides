@@ -16,10 +16,13 @@
     <img src="https://img.shields.io/badge/Powered_by-Gemini_AI-4A89F3?logo=google-gemini" alt="Powered by Gemini">
   </a>
   <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome">
+  
+
+
 </p>
-
-<img src="https://github.com/user-attachments/assets/7ddb6079-1633-456c-a933-e27a7f6e8c5c">
-
+<br>
+<img width="256" src="https://github.com/user-attachments/assets/6f9e4cf9-912d-4faa-9d37-54fb676f547e">
+<br>
 </div>
 
 
