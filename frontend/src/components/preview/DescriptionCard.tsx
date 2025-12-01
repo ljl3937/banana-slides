@@ -29,6 +29,21 @@ export const DescriptionCard: React.FC<DescriptionCardProps> = ({
   );
   const [editLayout, setEditLayout] = useState(layoutSuggestion);
 
+  const handleEdit = () => {
+    // 在打开编辑对话框时，从当前的 page 获取最新值
+    const currentDescContent = page.description_content;
+    const currentTitle = currentDescContent?.title || '';
+    const currentTextContent = currentDescContent?.text_content || [];
+    const currentLayoutSuggestion = currentDescContent?.layout_suggestion || '';
+    
+    setEditTitle(currentTitle);
+    setEditContent(
+      Array.isArray(currentTextContent) ? currentTextContent.join('\n') : ''
+    );
+    setEditLayout(currentLayoutSuggestion);
+    setIsEditing(true);
+  };
+
   const handleSave = () => {
     onUpdate({
       description_content: {
@@ -120,7 +135,7 @@ export const DescriptionCard: React.FC<DescriptionCardProps> = ({
             variant="ghost"
             size="sm"
             icon={<Edit2 size={16} />}
-            onClick={() => setIsEditing(true)}
+            onClick={handleEdit}
             disabled={!page.description_content}
           >
             编辑
