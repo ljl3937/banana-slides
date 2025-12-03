@@ -1,10 +1,11 @@
 """
 Export Controller - handles file export endpoints
 """
-from flask import Blueprint, request, send_file
+from flask import Blueprint, request, current_app
 from models import db, Project, Page
-from utils import error_response, not_found, bad_request
+from utils import error_response, not_found, bad_request, success_response
 from services import ExportService, FileService
+import os
 import io
 
 export_bp = Blueprint('export', __name__, url_prefix='/api/projects')
@@ -16,7 +17,14 @@ def export_pptx(project_id):
     GET /api/projects/{project_id}/export/pptx?filename=... - Export PPTX
     
     Returns:
-        PPTX file as download
+        JSON with download URL, e.g.
+        {
+            "success": true,
+            "data": {
+                "download_url": "/files/{project_id}/exports/xxx.pptx",
+                "download_url_absolute": "http://host:port/files/{project_id}/exports/xxx.pptx"
+            }
+        }
     """
     try:
         project = Project.query.get(project_id)
@@ -43,21 +51,31 @@ def export_pptx(project_id):
         if not image_paths:
             return bad_request("No generated images found for project")
         
-        # Generate PPTX
-        pptx_bytes = ExportService.create_pptx_from_images(image_paths)
+        # Determine export directory and filename
+        file_service = FileService(current_app.config['UPLOAD_FOLDER'])
+        exports_dir = file_service._get_exports_dir(project_id)
         
         # Get filename from query params or use default
         filename = request.args.get('filename', f'presentation_{project_id}.pptx')
-        
         if not filename.endswith('.pptx'):
             filename += '.pptx'
-        
-        # Return file
-        return send_file(
-            io.BytesIO(pptx_bytes),
-            mimetype='application/vnd.openxmlformats-officedocument.presentationml.presentation',
-            as_attachment=True,
-            download_name=filename
+
+        output_path = os.path.join(exports_dir, filename)
+
+        # Generate PPTX file on disk
+        ExportService.create_pptx_from_images(image_paths, output_file=output_path)
+
+        # Build download URLs
+        download_path = f"/files/{project_id}/exports/{filename}"
+        base_url = request.host_url.rstrip("/")
+        download_url_absolute = f"{base_url}{download_path}"
+
+        return success_response(
+            data={
+                "download_url": download_path,
+                "download_url_absolute": download_url_absolute,
+            },
+            message="Export PPTX task created"
         )
     
     except Exception as e:
@@ -70,7 +88,14 @@ def export_pdf(project_id):
     GET /api/projects/{project_id}/export/pdf?filename=... - Export PDF
     
     Returns:
-        PDF file as download
+        JSON with download URL, e.g.
+        {
+            "success": true,
+            "data": {
+                "download_url": "/files/{project_id}/exports/xxx.pdf",
+                "download_url_absolute": "http://host:port/files/{project_id}/exports/xxx.pdf"
+            }
+        }
     """
     try:
         project = Project.query.get(project_id)
@@ -97,21 +122,31 @@ def export_pdf(project_id):
         if not image_paths:
             return bad_request("No generated images found for project")
         
-        # Generate PDF
-        pdf_bytes = ExportService.create_pdf_from_images(image_paths)
-        
+        # Determine export directory and filename
+        file_service = FileService(current_app.config['UPLOAD_FOLDER'])
+        exports_dir = file_service._get_exports_dir(project_id)
+
         # Get filename from query params or use default
         filename = request.args.get('filename', f'presentation_{project_id}.pdf')
-        
         if not filename.endswith('.pdf'):
             filename += '.pdf'
-        
-        # Return file
-        return send_file(
-            io.BytesIO(pdf_bytes),
-            mimetype='application/pdf',
-            as_attachment=True,
-            download_name=filename
+
+        output_path = os.path.join(exports_dir, filename)
+
+        # Generate PDF file on disk
+        ExportService.create_pdf_from_images(image_paths, output_file=output_path)
+
+        # Build download URLs
+        download_path = f"/files/{project_id}/exports/{filename}"
+        base_url = request.host_url.rstrip("/")
+        download_url_absolute = f"{base_url}{download_path}"
+
+        return success_response(
+            data={
+                "download_url": download_path,
+                "download_url_absolute": download_url_absolute,
+            },
+            message="Export PDF task created"
         )
     
     except Exception as e:

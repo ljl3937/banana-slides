@@ -35,6 +35,12 @@ class FileService:
         pages_dir.mkdir(exist_ok=True, parents=True)
         return pages_dir
 
+    def _get_exports_dir(self, project_id: str) -> Path:
+        """Get exports directory for project (for generated PPT/PDF files)"""
+        exports_dir = self._get_project_dir(project_id) / "exports"
+        exports_dir.mkdir(exist_ok=True, parents=True)
+        return exports_dir
+
     def _get_materials_dir(self, project_id: str) -> Path:
         """Get materials directory for project (for standalone generated assets)"""
         materials_dir = self._get_project_dir(project_id) / "materials"

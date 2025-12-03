@@ -785,9 +785,16 @@ const debouncedUpdatePage = debounce(
 
     set({ isGlobalLoading: true, error: null });
     try {
-      const blob = await api.exportPPTX(currentProject.id);
-      const { downloadFile } = await import('@/utils');
-      downloadFile(blob, `${currentProject.idea_prompt.slice(0, 20)}.pptx`);
+      const response = await api.exportPPTX(currentProject.id);
+      const downloadUrl =
+        response.data?.download_url_absolute || response.data?.download_url;
+
+      if (!downloadUrl) {
+        throw new Error('导出链接获取失败');
+      }
+
+      // 使用浏览器直接下载链接，避免 axios 受带宽和超时影响
+      window.open(downloadUrl, '_blank');
     } catch (error: any) {
       set({ error: error.message || '导出失败' });
     } finally {
@@ -802,9 +809,16 @@ const debouncedUpdatePage = debounce(
 
     set({ isGlobalLoading: true, error: null });
     try {
-      const blob = await api.exportPDF(currentProject.id);
-      const { downloadFile } = await import('@/utils');
-      downloadFile(blob, `${currentProject.idea_prompt.slice(0, 20)}.pdf`);
+      const response = await api.exportPDF(currentProject.id);
+      const downloadUrl =
+        response.data?.download_url_absolute || response.data?.download_url;
+
+      if (!downloadUrl) {
+        throw new Error('导出链接获取失败');
+      }
+
+      // 使用浏览器直接下载链接，避免 axios 受带宽和超时影响
+      window.open(downloadUrl, '_blank');
     } catch (error: any) {
       set({ error: error.message || '导出失败' });
     } finally {

@@ -333,20 +333,24 @@ export const getTaskStatus = async (projectId: string, taskId: string): Promise<
 /**
  * 导出为PPTX
  */
-export const exportPPTX = async (projectId: string): Promise<Blob> => {
-  const response = await apiClient.get(`/api/projects/${projectId}/export/pptx`, {
-    responseType: 'blob',
-  });
+export const exportPPTX = async (
+  projectId: string
+): Promise<ApiResponse<{ download_url: string; download_url_absolute?: string }>> => {
+  const response = await apiClient.get<
+    ApiResponse<{ download_url: string; download_url_absolute?: string }>
+  >(`/api/projects/${projectId}/export/pptx`);
   return response.data;
 };
 
 /**
  * 导出为PDF
  */
-export const exportPDF = async (projectId: string): Promise<Blob> => {
-  const response = await apiClient.get(`/api/projects/${projectId}/export/pdf`, {
-    responseType: 'blob',
-  });
+export const exportPDF = async (
+  projectId: string
+): Promise<ApiResponse<{ download_url: string; download_url_absolute?: string }>> => {
+  const response = await apiClient.get<
+    ApiResponse<{ download_url: string; download_url_absolute?: string }>
+  >(`/api/projects/${projectId}/export/pdf`);
   return response.data;
 };
 
