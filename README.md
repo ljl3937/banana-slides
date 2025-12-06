@@ -199,6 +199,17 @@ docker compose logs -f frontend
 docker compose down
 ```
 
+6. **更新项目**
+
+拉取最新代码并重新构建和启动服务：
+
+```bash
+git pull
+docker compose down
+docker compose build --no-cache
+docker compose up -d
+```
+
 ### 从源码部署
 
 #### 环境要求
