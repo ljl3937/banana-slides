@@ -61,7 +61,7 @@ export const DescriptionCard: React.FC<DescriptionCardProps> = ({
     <>
       <Card className="p-0 overflow-hidden flex flex-col">
         {/* 标题栏 */}
-        <div className="bg-banana-50 px-4 py-3 border-b border-gray-100">
+        <div className="bg-primary-50 px-4 py-3 border-b border-gray-100">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="font-semibold text-gray-900">第 {index + 1} 页</span>

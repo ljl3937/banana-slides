@@ -12,6 +12,12 @@ import sqlite3
 from sqlalchemy.exc import SQLAlchemyError
 from flask_migrate import Migrate
 
+# 添加主系统路径到 Python path（必须在所有导入之前）
+_main_system_path = str(Path(__file__).parent.parent.parent.absolute())
+if _main_system_path not in sys.path:
+    sys.path.insert(0, _main_system_path)
+    print(f"[INFO] Added main system path to sys.path: {_main_system_path}")
+
 # Load environment variables from project root .env file
 _project_root = Path(__file__).parent.parent
 _env_file = _project_root / '.env'
@@ -25,6 +31,10 @@ from controllers.material_controller import material_bp, material_global_bp
 from controllers.reference_file_controller import reference_file_bp
 from controllers.settings_controller import settings_bp
 from controllers import project_bp, page_bp, template_bp, user_template_bp, export_bp, file_bp
+
+# 统一认证标志（延迟导入）
+UNIFIED_AUTH_AVAILABLE = False
+UNIFIED_AUTH_INIT = None
 
 
 # Enable SQLite WAL mode for all connections
@@ -94,7 +104,17 @@ def create_app():
 
     # Initialize extensions
     db.init_app(app)
-    CORS(app, origins=cors_origins)
+    
+    # CORS configuration with full options
+    CORS(app, 
+         origins=cors_origins,
+         supports_credentials=True,
+         allow_headers=['Content-Type', 'Authorization', 'X-Requested-With'],
+         methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+         expose_headers=['Content-Type', 'Authorization'],
+         max_age=3600
+    )
+    
     # Database migrations (Alembic via Flask-Migrate)
     Migrate(app, db)
     
@@ -113,6 +133,27 @@ def create_app():
     with app.app_context():
         # Load settings from database and sync to app.config
         _load_settings_to_config(app)
+
+    # 初始化统一认证（延迟导入）
+    global UNIFIED_AUTH_AVAILABLE, UNIFIED_AUTH_INIT
+    if not UNIFIED_AUTH_AVAILABLE:
+        try:
+            from unified_auth_integration import init_unified_auth
+            UNIFIED_AUTH_INIT = init_unified_auth
+            UNIFIED_AUTH_AVAILABLE = True
+            logging.info("✅ Unified auth integration loaded successfully")
+        except Exception as e:
+            UNIFIED_AUTH_AVAILABLE = False
+            logging.warning(f"⚠️ Unified auth integration not available: {e}")
+    
+    if UNIFIED_AUTH_AVAILABLE and UNIFIED_AUTH_INIT:
+        try:
+            UNIFIED_AUTH_INIT(app)
+            logging.info("✅ Unified authentication enabled")
+        except Exception as e:
+            logging.error(f"⚠️ Failed to initialize unified auth: {e}")
+    else:
+        logging.warning("⚠️ Unified authentication not available, running without auth")
 
     # Health check endpoint
     @app.route('/health')

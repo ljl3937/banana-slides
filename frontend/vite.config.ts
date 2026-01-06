@@ -29,7 +29,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     server: {
-      port: 3000,
+      port: 5173,  // 修改为 5173 端口，避免与主系统前端 (3000) 冲突
       host: true, // 监听所有地址
       watch: {
         usePolling: true, // WSL 环境下需要启用轮询

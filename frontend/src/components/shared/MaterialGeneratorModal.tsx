@@ -260,7 +260,7 @@ export const MaterialGeneratorModal: React.FC<MaterialGeneratorModalProps> = ({
             {/* 主参考图（可选） */}
             <div className="space-y-2">
               <div className="text-xs text-gray-600">主参考图（可选）</div>
-              <label className="w-40 h-28 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center cursor-pointer hover:border-banana-500 transition-colors bg-white relative group">
+              <label className="w-40 h-28 border-2 border-dashed border-gray-300 rounded flex flex-col items-center justify-center cursor-pointer hover:border-primary-500 transition-colors bg-white relative group">
                 {refImage ? (
                   <>
                     <img

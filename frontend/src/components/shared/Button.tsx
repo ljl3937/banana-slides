@@ -18,11 +18,11 @@ export const Button: React.FC<ButtonProps> = ({
   disabled,
   ...props
 }) => {
-  const baseStyles = 'inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-banana-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation';
+  const baseStyles = 'inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation';
   
   const variants = {
-    primary: 'bg-gradient-to-r from-banana-500 to-banana-600 text-black hover:shadow-yellow hover:-translate-y-0.5 active:translate-y-0 shadow-md',
-    secondary: 'bg-white border border-banana-500 text-black hover:bg-banana-50',
+    primary: 'bg-gradient-to-r from-primary-500 to-primary-600 text-white hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 shadow-md',
+    secondary: 'bg-white border border-primary-500 text-primary-700 hover:bg-primary-50',
     ghost: 'bg-transparent text-gray-700 hover:bg-gray-100',
   };
   

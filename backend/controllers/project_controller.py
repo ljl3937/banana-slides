@@ -2,7 +2,7 @@
 Project Controller - handles project-related endpoints
 """
 import logging
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, request, jsonify, current_app, g
 from werkzeug.exceptions import BadRequest
 from models import db, Project, Page, Task, ReferenceFile
 from utils import success_response, error_response, not_found, bad_request
@@ -110,6 +110,7 @@ def list_projects():
     Query params:
     - limit: number of projects to return (default: 50)
     - offset: offset for pagination (default: 0)
+    - user_id: filter by user ID (optional, auto-detected from auth)
     """
     try:
         from sqlalchemy import desc
@@ -117,12 +118,42 @@ def list_projects():
         limit = request.args.get('limit', 50, type=int)
         offset = request.args.get('offset', 0, type=int)
         
+        # 获取当前用户ID（从认证信息中获取）
+        current_user = getattr(g, 'current_user', None)
+        user_id = request.args.get('user_id')
+        
+        # 调试日志
+        logger.info(f"list_projects - current_user: {current_user}")
+        if current_user:
+            logger.info(f"list_projects - current_user type: {type(current_user)}")
+        
+        # 如果有认证用户，优先使用认证用户的ID
+        # current_user 是字典类型，不是对象
+        if current_user:
+            if isinstance(current_user, dict):
+                user_id = current_user.get('id')
+                logger.info(f"list_projects - Using authenticated user_id from dict: {user_id}")
+            elif hasattr(current_user, 'id'):
+                user_id = current_user.id
+                logger.info(f"list_projects - Using authenticated user_id from attr: {user_id}")
+        
+        if not user_id:
+            logger.warning(f"list_projects - No user_id found, will return all projects")
+        
+        # 构建查询
+        query = Project.query
+        
+        # 如果指定了user_id，按用户过滤
+        if user_id:
+            query = query.filter_by(user_id=user_id)
+        
         # Get projects ordered by updated_at descending
-        projects = Project.query.order_by(desc(Project.updated_at)).limit(limit).offset(offset).all()
+        projects = query.order_by(desc(Project.updated_at)).limit(limit).offset(offset).all()
+        total = query.count()
         
         return success_response({
             'projects': [project.to_dict(include_pages=True) for project in projects],
-            'total': Project.query.count()
+            'total': total
         })
     
     except Exception as e:
@@ -168,6 +199,19 @@ def create_project():
             template_style=data.get('template_style'),
             status='DRAFT'
         )
+        
+        # 设置用户ID（从认证信息中获取）
+        current_user = getattr(g, 'current_user', None)
+        if current_user:
+            # current_user 是字典类型
+            if isinstance(current_user, dict):
+                project.user_id = current_user.get('id')
+                logger.info(f"create_project - Set user_id from dict: {project.user_id}")
+            elif hasattr(current_user, 'id'):
+                project.user_id = current_user.id
+                logger.info(f"create_project - Set user_id from attr: {project.user_id}")
+        else:
+            logger.warning("create_project - No current_user in context")
         
         db.session.add(project)
         db.session.commit()

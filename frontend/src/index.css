@@ -3,11 +3,16 @@
 @tailwind utilities;
 
 :root {
-  /* 主色 - 黄色系 */
-  --banana-yellow: #FFD700;
-  --banana-yellow-light: #FFE44D;
-  --banana-yellow-dark: #FFC700;
-  --banana-yellow-pale: #FFF9E6;
+  /* 主色 - 蓝色系（与主系统一致） */
+  --primary: #3b82f6;
+  --primary-light: #60a5fa;
+  --primary-dark: #2563eb;
+  --primary-pale: #eff6ff;
+
+  /* 辅助色 - 灰色系 */
+  --secondary: #64748b;
+  --secondary-light: #94a3b8;
+  --secondary-dark: #475569;
 
   /* 中性色 - 黑白灰 */
   --black: #1A1A1A;
@@ -17,10 +22,10 @@
   --white: #FFFFFF;
 
   /* 功能色 */
-  --success: #52C41A;
-  --warning: #FAAD14;
-  --error: #FF4D4F;
-  --info: #1890FF;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #3b82f6;
 
   /* 过渡 */
   --transition-fast: 150ms ease-in-out;
@@ -35,7 +40,7 @@
 }
 
 body {
-  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   /* 移动端优化 */
@@ -58,12 +63,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--banana-yellow);
+  background: var(--primary);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--banana-yellow-dark);
+  background: var(--primary-dark);
 }
 
 /* 移动端触摸优化 */
@@ -79,16 +84,6 @@ body {
   a:not(.no-min-touch-target):not([class*="w-"]):not([class*="h-"]) {
     min-height: 44px; /* iOS推荐的最小触摸目标 */
     min-width: 44px;
-  }
-}
-
-/* 渐变文本动画 */
-@keyframes gradient {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
   }
 }
 

@@ -16,8 +16,8 @@ export const Loading: React.FC<LoadingProps> = ({
     <div className="flex flex-col items-center justify-center">
       {/* 加载图标 */}
       <div className="relative w-12 h-12 mb-4">
-        <div className="absolute inset-0 border-4 border-banana-100 rounded-full" />
-        <div className="absolute inset-0 border-4 border-banana-500 rounded-full border-t-transparent animate-spin" />
+        <div className="absolute inset-0 border-4 border-primary-100 rounded-full" />
+        <div className="absolute inset-0 border-4 border-primary-500 rounded-full border-t-transparent animate-spin" />
       </div>
       
       {/* 消息 */}
@@ -32,7 +32,7 @@ export const Loading: React.FC<LoadingProps> = ({
           </div>
           <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-banana-500 to-banana-600 transition-all duration-300"
+              className="h-full bg-gradient-to-r from-primary-500 to-primary-600 transition-all duration-300"
               style={{ width: `${(progress.completed / progress.total) * 100}%` }}
             />
           </div>
@@ -57,7 +57,7 @@ export const Skeleton: React.FC<{ className?: string }> = ({ className }) => {
   return (
     <div
       className={cn(
-        'animate-shimmer bg-gradient-to-r from-gray-200 via-banana-50 to-gray-200',
+        'animate-shimmer bg-gradient-to-r from-gray-200 via-blue-50 to-gray-200',
         'bg-[length:200%_100%]',
         className
       )}

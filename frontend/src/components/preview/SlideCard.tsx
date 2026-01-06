@@ -33,7 +33,7 @@ export const SlideCard: React.FC<SlideCardProps> = ({
   return (
     <div
       className={`group cursor-pointer transition-all ${
-        isSelected ? 'ring-2 ring-banana-500' : ''
+        isSelected ? 'ring-2 ring-primary-500' : ''
       }`}
       onClick={onClick}
     >
@@ -55,7 +55,7 @@ export const SlideCard: React.FC<SlideCardProps> = ({
                   e.stopPropagation();
                   onEdit();
                 }}
-                className="p-2 bg-white rounded-lg hover:bg-banana-50 transition-colors"
+                className="p-2 bg-white rounded-lg hover:bg-primary-50 transition-colors"
               >
                 <Edit2 size={18} />
               </button>
@@ -93,7 +93,7 @@ export const SlideCard: React.FC<SlideCardProps> = ({
       <div className="flex items-center gap-2">
         <span
           className={`text-sm font-medium ${
-            isSelected ? 'text-banana-600' : 'text-gray-700'
+            isSelected ? 'text-primary-600' : 'text-gray-700'
           }`}
         >
           {index + 1}. {page.outline_content.title}

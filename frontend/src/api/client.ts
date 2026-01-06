@@ -13,6 +13,13 @@ export const apiClient = axios.create({
 // 请求拦截器
 apiClient.interceptors.request.use(
   (config) => {
+    // 添加认证Token（从localStorage获取）
+    // 优先使用统一认证的token，然后是直接存储的token
+    const token = localStorage.getItem('unified_auth_token') || localStorage.getItem('token');
+    if (token && config.headers) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    
     // 如果请求体是 FormData，删除 Content-Type 让浏览器自动设置
     // 浏览器会自动添加正确的 Content-Type 和 boundary
     if (config.data instanceof FormData) {
